@@ -5,20 +5,19 @@
 import argparse
 import pathlib
 import colorama
-import collections
+from colorama import Fore, Style
 
 
 def tree(directory):
-    print('\033[1;31m' + f'>>> {directory}')
+    print(Fore.RED + f'>>> {directory}')
     for path in sorted(directory.rglob('*')):
         depth = len(path.relative_to(directory).parts)
-        spacer = '\t' * depth
-        print('\033[1;32m' + f'{spacer} >> {path.name}')
-        for new_path in sorted(directory.joinpath(path).rglob('*')):
+        spacer = ' ' * depth
+        print(Fore.MAGENTA + Style.BRIGHT + f'{spacer} >> {path.name}')
+        for new_path in sorted(directory.joinpath(path).glob('*')):
             depth = len(new_path.relative_to(directory.joinpath(path)).parts)
-            spacer = '\t\t' * depth
-            print('\033[1;33m' + f'{spacer} > {new_path.name}')
-
+            spacer = '\t' * depth
+            print(Fore.CYAN + f'{spacer} > {new_path.name}')
 
 def main(command_line=None):
     colorama.init()
@@ -71,8 +70,6 @@ def main(command_line=None):
         directory_path = path / args.filename
         directory_path.mkdir()
         tree(path)
-    elif args.command == "how":
-        print(collections.Counter(p.suffix for p in pathlib.Path.cwd().iterdir()))
     else:
         tree(path)
 
